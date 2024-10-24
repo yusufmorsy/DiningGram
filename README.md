@@ -1,25 +1,23 @@
 # DiningGram
-# CSCI 3308: Group Project
-# Collaborators: Yusuf, Rodolfo, Luke, Andy
+# CSCI 3308: Media Platform Group Project
+## Contributors: Yusuf, Rodolfo, Luke, Andy, (and Jake if he appears)
 
-## ABOUT THIS PROJECT
+Initial Structure:
+Front-end: Luke and Andy
+Back-end: Yusuf and Rodolfo
 
+## Brief Application description
+
+## Technology Stack used for the project
 Add text here
-
-## HOW TO COMPILE AND RUN
-
-Use the following command to compile this directory:
-
-```
+## Prerequisites to run the application - Any software that needs to be installed to run the application
 Add text here
+## Instructions on how to run the application locally.
+Add steps here
+## How to run the tests
+Add steps here
 ```
-
-When compiled successfully, use the following 4 arguments to run the executable:
-
+This is for copy and pasting
 ```
-./game items.txt monsters.txt story.txt
-```
-
-## DEPENDENCIES
-
-Add/remove sections as needed
+## Link to the deployed application
+Add text here
