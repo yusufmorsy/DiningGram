@@ -1,6 +1,3 @@
-This is the meeting log for this Mon:
-Writing on this on a text file called meetinglogs.txt (haven’t pushed it yet)
-
 Meeting Log 1: 10/28/2024
 
 Both during and after meeting with our TA on Monday, we have made the following decisions:
