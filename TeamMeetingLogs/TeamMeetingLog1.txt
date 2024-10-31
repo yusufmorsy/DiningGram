@@ -1,0 +1,19 @@
+This is the meeting log for this Mon:
+Writing on this on a text file called meetinglogs.txt (haven’t pushed it yet)
+
+Meeting Log 1: 10/28/2024
+
+Both during and after meeting with our TA on Monday, we have made the following decisions:
+
+Features: We discussed to implement the following key features: 
+ (1) users can create posts, 
+ (2) users can leave likes on posts, 
+ (3) a comment system under each post, 
+ (4) a rating system (such as assigning a given number of stars out of 5 based on all reviews posted for the dining hall in question), 
+ (5) directing users to the link containing the dining hall location details, and 
+ (6) log in and out of the page as well as creating accounts
+
+Data Querying: Currently, we are focusing on using PostgreSQL, as it's the database management system that we're most experienced with.
+Roles and Responsibilities: For project development, we are assigning
+- Rodolfo Martinez-Maldonado and Yusuf Morsy for the back-end development of the project while
+- Luke Chabin and Andy Wood will work on the front-end development.

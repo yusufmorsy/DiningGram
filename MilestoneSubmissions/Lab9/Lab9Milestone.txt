@@ -1,0 +1,60 @@
+Here’s the lab 9 deliverable looking like right now:
+
+Team Number: 012-5
+
+Team Name: The Diners
+
+Team Members
+
+Andy Wood
+ - Github Username: AndySW4
+ - Email: andy.wood@colorado.edu
+Luke Chabin
+ - Github Username: luch5662
+ - Email: luke.chabin@colorado.edu
+Rodolfo Martinez-Maldonado
+ - Github Username: C0deEnthusiast
+ - Email: rodolfo.martinez-maldonado@colorado.edu
+Yusuf Morsy
+ - Github Username: yusufmorsy
+ - Email: yusuf.morsy@colorado.edu
+
+Application Name: DiningGram
+
+Application Description
+
+Our application is a social media platform that revolves around the dining halls on campus. Users can upload pictures of their food 
+and dining hall experiences. On their posts, they can include a rating for the dining experience, a dining hall location, and a 
+caption. Users can view other posts and like, save, and leave comments on them, and they can click on the dining hall location to 
+filter posts by that specific dining hall. The user can also edit their profile, adding a profile picture and bio, and view other 
+user’s profiles, where they can see that user’s posts and saved posts.
+
+Through our media platform, students will be actively engaged in creating a community-driven resource to improve their overall dining 
+experience by highlighting the most and least favorable aspects of each dining hall. With this tool, students will have the opportunity 
+to share constructive feedback, make informed dining decisions, and contribute to a positive impact on campus.
+
+Vision Statement
+
+For CU Boulder students, who want to connect with other students about the common dining halls we all eat at. Dining Gram is a 
+website that easily connects students in a way that feels familiar and enjoyable. Unlike Nutrislice, our product gives students 
+an authentic view of how the food tastes, and the best options available according to students.
+
+Development Methodology
+-We have chosen to adopt an Agile methodology for this four-week project. We incorporate Scrum practices such as stand-up meetings 
+and utilize Kanban board on Github. Our project will be organized into epics and user stories as discussed in class. 
+
+
+
+Communication Plan
+
+During the course of this project, we will communicate using Discord, and Zoom on occasion, 
+for project discussion and to coordinate tasks.
+
+
+
+Meeting Plan
+
+ - Team Meeting: For regular meetings, we have agreed that the ideal time to meet is every Wednesday from 5:30pm to 6:00pm.
+ - As for modality, we will be hybrid, either on Zoom or in-person (specific location to be determined).
+ - TA Meetings: We will be meeting with our TA every Monday from 5pm to 5:15pm. We will meet over Zoom.
+
