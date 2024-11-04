@@ -65,3 +65,16 @@ app.use(
     extended: true,
   })
 );
+
+app.get('/login', (req, res) => {
+  res.render('pages/login');
+});
+
+app.get('/register', (req, res) => {
+  res.render('pages/register');
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
