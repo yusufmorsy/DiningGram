@@ -1,7 +1,5 @@
 //Dependencies
 
-//DO PULL REQUEST
-
 const express = require('express'); // To build an application server or API
 const app = express();
 const handlebars = require('express-handlebars');
@@ -65,3 +63,23 @@ app.use(
     extended: true,
   })
 );
+
+//API Routes
+
+app.get('/', (req, res) => {
+  //Redirects to login page, hopefully
+});
+
+app.get('/register', (req, res) => {
+  res.render('pages/register');
+});
+
+// Registering user
+app.post('/register', async (req, res) => {
+  //
+});
+
+
+//Starting Server
+app.listen(3000);
+console.log('Server is listening on port 3000');
