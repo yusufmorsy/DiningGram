@@ -65,6 +65,9 @@ app.use(
     extended: true,
   })
 );
+app.get('/', (req, res) => {
+  res.render('pages/register');
+});
 
 app.get('/login', (req, res) => {
   res.render('pages/login');
