@@ -64,22 +64,20 @@ app.use(
   })
 );
 
-//API Routes
-
 app.get('/', (req, res) => {
-  //Redirects to login page, hopefully
+  res.render('pages/register');
+});
+
+app.get('/login', (req, res) => {
+  res.render('pages/login');
 });
 
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
 
-// Registering user
-app.post('/register', async (req, res) => {
-  //
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-
-//Starting Server
-app.listen(3000);
-console.log('Server is listening on port 3000');
