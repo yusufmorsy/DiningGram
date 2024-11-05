@@ -1,5 +1,3 @@
---username is PK and not a user_id as we want username to be
---unique for each account/user
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -10,7 +8,8 @@ CREATE TABLE users (
 );
 
 CREATE TABLE dining_halls {
-    hall_name VARCHAR(50) PRIMARY KEY,
+    hall_id SERIAL PRIMARY KEY,
+    hall_name VARCHAR(50),
     avg_rating DECIMAL(2,1) DEFAULT 0, -- How it should work/look: <Digit>.<Digit>; Ex: 4.9
     image_url TEXT NOT NULL, -- Subject to change, if we want to do 'upload file' instead
     hall_description TEXT NOT NULL -- Fails the point of a media platform if desc is empty
@@ -19,13 +18,13 @@ CREATE TABLE dining_halls {
 CREATE TABLE posts {
     post_id SERIAL PRIMARY KEY,
     poster_id INT NOT NULL,
-    reviewed_hall VARCHAR(50) NOT NULL, -- Subject to change (works best with dropdown)
+    reviewed_hall_id INT NOT NULL,
     hall_rating INT CHECK (hall_rating >= 0),
     likes INT DEFAULT 0,
     image_url TEXT, -- Subject to change, if we want to do 'upload file' instead
     post_content TEXT NOT NULL, -- Users can spam empty posts, so empty text is not optional
     FOREIGN KEY (poster_id) REFERENCES users(user_id),
-    FOREIGN KEY (reviewed_hall) REFERENCES dining_halls(hall_name) -- Subject to change too
+    FOREIGN KEY (reviewed_hall_id) REFERENCES dining_halls(hall_id)
 };
 
 CREATE TABLE comments {
