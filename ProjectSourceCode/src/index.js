@@ -1,7 +1,5 @@
 //Dependencies
 
-//DO PULL REQUEST
-
 const express = require('express'); // To build an application server or API
 const app = express();
 const handlebars = require('express-handlebars');
@@ -65,6 +63,7 @@ app.use(
     extended: true,
   })
 );
+
 app.get('/', (req, res) => {
   res.render('pages/register');
 });
@@ -81,3 +80,4 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
+

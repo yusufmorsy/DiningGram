@@ -13,13 +13,25 @@ Add text here
 ## Technology Stack used for the project
 Add text here
 ## Prerequisites to run the application - Any software that needs to be installed to run the application
-Add text here
+To run this application, install Docker.
 ## Instructions on how to run the application locally.
-Add steps here
+To run this locally, enter the directory that contains the `docker-compose.yaml` file. Keep in mind that you will need to create an `.env` file, containing the necssary credentials, before running this. It is recommended to set your .env file in the same directory as the yaml file.
+
+For this application, the local path for the yaml file is:
+```
+DiningGram/ProjectSourceCode/src
+```
+In this directory, assuming you have installed Docker, run the following:
+```
+docker compose up -d
+```
 ## How to run the tests
 Add steps here
 ```
 Use this structure if we need user to copy executable format quickly
 ```
 ## Link to the deployed application
-Add text here
+In your browser, access the deployed application through the following:
+```
+http://localhost:3000/
+```
