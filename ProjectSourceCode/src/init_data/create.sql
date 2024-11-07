@@ -1,8 +1,8 @@
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
-    full_name VARCHAR(100) NOT NULL, --First and last name
-    email_address VARCHAR(50) NOT NULL,
+    full_name VARCHAR(100), -- NOT NULL, --First and last name
+    email_address VARCHAR(50), --NOT NULL,
     hashed_password CHAR(60) NOT NULL, --Remember to hash password before inserting
     profile_biography TEXT -- Optional for user
 );

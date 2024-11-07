@@ -79,15 +79,26 @@ app.get('/register', (req, res) => {
 //for now only username and password
 app.post('/register', async (req, res) => {
   try {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const { username, password } = req.body;
 
-      await db.none('INSERT INTO users(username, hashed_password) VALUES($1, $2)', [req.body.username, hashedPassword]);
+      // Basic validation
+      if (!username || !password) {
+          return res.status(400).json({ message: 'Username and password are required.' });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await db.none('INSERT INTO users(username, hashed_password) VALUES($1, $2)', [username, hashedPassword]);
 
       res.redirect('/login');
   } catch (error) {
       console.error('Error during registration:', error);
 
-      res.render('pages/register', { message: 'Registration failed. Please try again.', error: true });
+      if (error.code === '23505') { // Unique violation in PostgreSQL
+          return res.status(409).json({ message: 'Username already exists.' });
+      }
+
+      res.status(500).json({ message: 'Registration failed. Please try again.', error: true });
   }
 });
 
