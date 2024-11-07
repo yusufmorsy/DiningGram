@@ -76,6 +76,46 @@ app.get('/register', (req, res) => {
   res.render('pages/register');
 });
 
+//for now only username and password
+app.post('/register', async (req, res) => {
+  try {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+      await db.none('INSERT INTO users(username, hashed_password) VALUES($1, $2)', [req.body.username, hashedPassword]);
+
+      res.redirect('/login');
+  } catch (error) {
+      console.error('Error during registration:', error);
+
+      res.render('pages/register', { message: 'Registration failed. Please try again.', error: true });
+  }
+});
+
+
+app.post('/login', async (req, res) => {
+  try {
+      const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
+
+      if (!user) {
+          return res.redirect('/register');
+      }
+
+      const match = await bcrypt.compare(req.body.password, user.hashed_password );
+
+      if (!match) {
+          return res.render('pages/login', { message: 'Incorrect username or password.', error: true });
+      }
+
+      req.session.user = user;
+      req.session.save(() => {
+          res.redirect('/discover');
+      });
+  } catch (error) {
+      console.error('Error during login:', error);
+      res.render('pages/login', { message: 'Login failed. Please try again.', error: true });
+  }
+});
+
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
