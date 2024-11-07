@@ -7,15 +7,15 @@ CREATE TABLE users (
     profile_biography TEXT -- Optional for user
 );
 
-CREATE TABLE dining_halls {
+CREATE TABLE dining_halls (
     hall_id SERIAL PRIMARY KEY,
     hall_name VARCHAR(50),
     avg_rating DECIMAL(2,1) DEFAULT 0, -- How it should work/look: <Digit>.<Digit>; Ex: 4.9
     image_url TEXT NOT NULL, -- Subject to change, if we want to do 'upload file' instead
     hall_description TEXT NOT NULL -- Fails the point of a media platform if desc is empty
-};
+);
 
-CREATE TABLE posts {
+CREATE TABLE posts (
     post_id SERIAL PRIMARY KEY,
     poster_id INT NOT NULL,
     reviewed_hall_id INT NOT NULL,
@@ -25,29 +25,29 @@ CREATE TABLE posts {
     post_content TEXT NOT NULL, -- Users can spam empty posts, so empty text is not optional
     FOREIGN KEY (poster_id) REFERENCES users(user_id),
     FOREIGN KEY (reviewed_hall_id) REFERENCES dining_halls(hall_id)
-};
+);
 
-CREATE TABLE comments {
+CREATE TABLE comments (
     comment_id SERIAL PRIMARY KEY,
     commenter_id INT NOT NULL,
     likes INT DEFAULT 0,
     comment_content TEXT NOT NULL, -- Users can spam empty comments, so empty text is not optional
     FOREIGN KEY (commenter_id) REFERENCES users(user_id)
-};
+);
 
 --Allows us to determine which comments are for which post
-CREATE TABLE post_to_comment {
+CREATE TABLE post_to_comment (
     post_id INT NOT NULL,
     comment_id INT NOT NULL,
     PRIMARY KEY (post_id, comment_id), -- Ensures no duplicates are added here
     FOREIGN KEY (post_id) REFERENCES posts(post_id),
     FOREIGN KEY (comment_id) REFERENCES comments(comment_id)
-};
+);
 
-CREATE TABLE tagged_posts {
+CREATE TABLE tagged_posts (
     user_id INT NOT NULL,
     post_id INT NOT NULL,
     PRIMARY KEY (user_id, post_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (post_id) REFERENCES posts(post_id)
-};
+);
