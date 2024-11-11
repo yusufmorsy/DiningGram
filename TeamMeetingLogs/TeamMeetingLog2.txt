@@ -1,4 +1,10 @@
 Meeting Log 2: 11/04/2024
 
-Both during and after meeting with our TA on Monday, we have made the following decisions:
-
+Both during and after meeting with our TA on Monday, we decided to split the project into the
+following major segments: 
+ - Implement the API Routes of the log in, using SQL parameterization to improve security
+ - Create the HTML/CSS for the log in page
+ - Create the HTML/CSS for the register page 
+ - Create the database necessary to store user, post, and comment data
+ - Create a footer
+ - Create the HTML/CSS navbar handlebars
