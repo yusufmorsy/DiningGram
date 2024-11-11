@@ -9,7 +9,7 @@ CREATE TABLE users (
 
 CREATE TABLE dining_halls (
     hall_id SERIAL PRIMARY KEY,
-    hall_name VARCHAR(50),
+    hall_name VARCHAR(50) NOT NULL,
     avg_rating DECIMAL(2,1) DEFAULT 0, -- How it should work/look: <Digit>.<Digit>; Ex: 4.9
     image_url TEXT NOT NULL, -- Subject to change, if we want to do 'upload file' instead
     hall_description TEXT NOT NULL -- Fails the point of a media platform if desc is empty
@@ -44,7 +44,17 @@ CREATE TABLE post_to_comment (
     FOREIGN KEY (comment_id) REFERENCES comments(comment_id)
 );
 
+--May be removed
 CREATE TABLE tagged_posts (
+    user_id INT NOT NULL,
+    post_id INT NOT NULL,
+    PRIMARY KEY (user_id, post_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (post_id) REFERENCES posts(post_id)
+);
+
+--From clicking the like button; useful in ensuring no users likes a post more than once
+CREATE TABLE liked_posts (
     user_id INT NOT NULL,
     post_id INT NOT NULL,
     PRIMARY KEY (user_id, post_id),
