@@ -140,3 +140,18 @@ app.get('/home',(req, res) => {
 });
 
 module.exports = app.listen(3000);
+
+//Define rating system for stars on post
+const stars = document.querySelectorAll('.star');
+stars.forEach(star => {
+  star.addEventListener('click', () => {
+    let rating = star.getAttribute('data-rating');
+    highlightStars(rating);
+  });
+});
+
+function highlightStars(rating) {
+  stars.forEach(star => {
+    star.classList.toggle('highlighted', star.getAttribute('data-rating') <= rating);
+  });
+}
