@@ -119,7 +119,7 @@ app.post('/login', async (req, res) => {
 
       req.session.user = user;
       req.session.save(() => {
-          res.redirect('/discover');
+          res.redirect('/home');
       });
   } catch (error) {
       console.error('Error during login:', error);
@@ -129,6 +129,14 @@ app.post('/login', async (req, res) => {
 
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
+});
+
+app.get('/create-post', (req, res) => {
+  res.render('pages/create-post', { title: 'Create a New Post' });
+});
+
+app.get('/home',(req, res) => {
+  res.render('pages/home');
 });
 
 module.exports = app.listen(3000);

@@ -1,0 +1,31 @@
+<h2 class="text-center mb-4">Create a New Post</h2>
+<form action="/posts/create" method="POST" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label for="picture" class="form-label">Upload Picture</label>
+    <input type="file" class="form-control" id="picture" name="picture" accept="image/*" required>
+  </div>
+  <div class="mb-3">
+    <label for="bio" class="form-label">Bio</label>
+    <textarea class="form-control" id="bio" name="bio" rows="3" placeholder="Write a caption..." required></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="location" class="form-label">Location</label>
+    <input type="text" class="form-control" id="location" name="location" placeholder="Enter location" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Rating</label>
+    <div class="rating">
+      <input type="radio" name="rating" id="rating-5" value="5" required>
+      <label for="rating-5"><i class="fa fa-star"></i></label>
+      <input type="radio" name="rating" id="rating-4" value="4">
+      <label for="rating-4"><i class="fa fa-star"></i></label>
+      <input type="radio" name="rating" id="rating-3" value="3">
+      <label for="rating-3"><i class="fa fa-star"></i></label>
+      <input type="radio" name="rating" id="rating-2" value="2">
+      <label for="rating-2"><i class="fa fa-star"></i></label>
+      <input type="radio" name="rating" id="rating-1" value="1">
+      <label for="rating-1"><i class="fa fa-star"></i></label>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary w-100">Post</button>
+</form>
