@@ -28,8 +28,8 @@ describe('Server!', () => {
 });
 
 // *********************** TODO: WRITE 2 UNIT TESTCASES **************************
-describe('Testing Add User API', () => {
-  it('positive : /register', done => {
+describe('Testing Register User API', () => {
+  it('Positive : /register. Valid username and password', done => {
     chai
       .request(server)
       .post('/register')
@@ -41,31 +41,28 @@ describe('Testing Add User API', () => {
         done();
       });
   });
+  it('Negative : /register. Valid username but invalid password', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: "fakeAccount", password: ""})
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.message).to.equals('Username and password are required.');
+        done();
+      });
+  });
+  it('Negative : /register. Valid password but invalid username', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: "", password: "invalidAccount"})
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.message).to.equals('Username and password are required.');
+        done();
+      });
+  });
 });
 
-
-  // describe('Testing Add User API', () => {
-  //   it('positive : /add_user', done => {
-  //     // Refer above for the positive testcase implementation
-  //   });
-  
-  //   // Example Negative Testcase :
-  //   // API: /add_user
-  //   // Input: {id: 5, name: 10, dob: '2020-02-20'}
-  //   // Expect: res.status == 400 and res.body.message == 'Invalid input'
-  //   // Result: This test case should pass and return a status 400 along with a "Invalid input" message.
-  //   // Explanation: The testcase will call the /add_user API with the following invalid inputs
-  //   // and expects the API to return a status of 400 along with the "Invalid input" message.
-  //   it('Negative : /add_user. Checking invalid name', done => {
-  //     chai
-  //       .request(server)
-  //       .post('/add_user')
-  //       .send({id: '5', name: 10, dob: '2020-02-20'})
-  //       .end((err, res) => {
-  //         expect(res).to.have.status(400);
-  //         expect(res.body.message).to.equals('Invalid input');
-  //         done();
-  //       });
-  //   });
-  // });
 // ********************************************************************************
