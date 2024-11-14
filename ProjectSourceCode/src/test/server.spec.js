@@ -34,6 +34,7 @@ describe('Testing Add User API', () => {
       .request(server)
       .post('/register')
       .send({username: "yusufmorsy", password: "mynameisyusuf"}) // Changed field name
+      .redirects(0) // Prevent following the redirect automatically
       .end((err, res) => {
         expect(res).to.have.status(302); // Expecting a redirect
         expect(res).to.redirectTo(/\/login$/); // Optionally check the redirect URL
