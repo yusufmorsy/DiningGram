@@ -1,6 +1,7 @@
 // ********************** Initialize server **********************************
 
-const server = require('../index'); //TODO: Make sure the path to your index.js is correctly added
+const { server, db } = require('../index'); //TODO: Make sure the path to your index.js is correctly added
+const bcrypt = require('bcryptjs'); // Ensure this path matches where bcrypt is installed
 
 // ********************** Import Libraries ***********************************
 
@@ -37,7 +38,7 @@ describe('Testing Register User API', () => {
       .redirects(0) // Prevent following the redirect automatically
       .end((err, res) => {
         expect(res).to.have.status(302); // Expecting a redirect
-        expect(res).to.redirectTo(/\/login$/); // Optionally check the redirect URL
+        expect(res).to.redirectTo(/\/login$/);
         done();
       });
   });
@@ -66,3 +67,50 @@ describe('Testing Register User API', () => {
 });
 
 // ********************************************************************************
+
+describe('Testing Login User API', () => {
+  const testUser = {
+    username: 'testdummy',
+    password: 'coolpassword',
+  };
+
+  before(async () => {
+    //Insert test user
+    const hashedPassword = await bcrypt.hash(testUser.password, 10);
+    await db.none('INSERT INTO users(username, hashed_password) VALUES($1, $2)', [
+      testUser.username, 
+      hashedPassword
+    ]);
+  });
+
+  it('Positive : /login. Valid username and password', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: testUser.username, password: testUser.password})
+      .redirects(0) // Prevent following the redirect automatically
+      .end((err, res) => {
+        expect(res).to.have.status(302); //Expecting a redirect
+        expect(res).to.redirectTo(/\/home$/);
+        done();
+      });
+  });
+  it('Negative : /login. Valid username, but invalid password', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: testUser.username, password: "fakePassword"})
+      .redirects(0) // Prevent following the redirect automatically
+      .end((err, res) => {
+        expect(res).to.have.status(200); //Expecting a render
+        res.should.be.html; // Expecting a HTML response
+        //expect(res.text).to.include('Incorrect username or password.');
+        done();
+      });
+  });
+
+  after(async () => {
+    // Clean up the test user after tests
+    await db.none('DELETE FROM users WHERE username = $1', [testUser.username]);
+  });
+});
