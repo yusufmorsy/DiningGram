@@ -133,8 +133,8 @@ app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
 
-app.get('/create-post', (req, res) => {
-  res.render('pages/create-post', { title: 'Create a New Post' });
+app.get('/createpost', (req, res) => {
+  res.render('pages/createpost', { title: 'Create a New Post' });
 });
 
 app.get('/home',(req, res) => {
