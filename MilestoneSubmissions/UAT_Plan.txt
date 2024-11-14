@@ -1,0 +1,32 @@
+Feature 1: Users can create posts
+
+To test this feature, we will consider the following two test cases: the post was successfully created and the post creation was not successful. For the user acceptance criteria, all of the following fields must be submitted:
+- File link
+- A biography/post content
+- Name of the dining hall they are referring to
+- A rating
+
+Should they provide all the necessary information (positive test case), the post will be successfully created and then stored into the post table of the users_db database once submitted. This will be tested under the localhost environment. We expect the result to be a redirection to /home.
+
+Under the negative test case, we will consider that at least one of the fields is missing (i.e. dining hall name). Thus, we expect the post creation to fail and render the post creation page again.
+
+
+
+Feature 2: users can leave likes on posts
+
+To test this feature, we will consider the following two test cases: the post was successfully liked and that it was not successfully liked. For the user acceptance criteria, given that the post exists, upon clicking the like button, the corresponding API route will update the column for the corresponding post in the posts table and increment the like value by 1.
+
+Under the positive test case, the post will be successfully liked and the post from the posts table will be updated to include one more like once the button is submitted. This will be tested under the localhost environment. We expect the result to be a render of /home with the updated information of the post.
+
+Under the negative test case, we will consider that the post doesn’t exist. Thus, we expect the action to like the post fails and render the /home as is, without updating the table.
+
+
+
+Feature 3: a comment system under each post
+
+To test this feature, we will consider the following two test cases: the comment was successfully created and that it was not successfully created. For the user acceptance criteria, given that the post exists, upon clicking the comment button, all of the following fields must be submitted:
+- Name
+- Comment description/content
+Under the positive test case, the comment will be successfully created with the necessary fields and the comment will be stored in the comments table and linked to the posts table under the posts_to_comments table once the button is submitted. This will be tested under the localhost environment. We expect the result to be an updated render of /home with the comment included.
+
+Under the negative test case, we will consider that the comment content was not submitted. Thus, we expect the action to create the comment fails and renders the /home page as is.
