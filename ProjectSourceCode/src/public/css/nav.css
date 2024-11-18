@@ -1,0 +1,19 @@
+.navbar {
+    background-color: #333333;
+}
+
+.nav-link {
+    color: #CFB87C !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.nav-link:hover {
+    color: #ffffff !important;
+}
+
+.navbar-toggler {
+    border-color: #CFB87C;
+}
+
+

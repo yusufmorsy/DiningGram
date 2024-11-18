@@ -64,6 +64,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = !!req.session?.user; // Convert to boolean
+  next();
+});
+
 app.get('/', (req, res) => {
   res.render('pages/register');
 });
@@ -137,8 +142,17 @@ app.get('/createpost', (req, res) => {
   res.render('pages/createpost', { title: 'Create a New Post' });
 });
 
-app.get('/home',(req, res) => {
+app.get('/home', (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect('/login'); //if not logged in
+  }
   res.render('pages/home');
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
 });
 
 //Define rating system for stars on post
