@@ -11,6 +11,9 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcryptjs'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part C.
 
+
+//const multer = require('multer');
+
 //Database Connection
 
 // create `ExpressHandlebars` instance and configure the layouts and partials dir.
@@ -138,8 +141,9 @@ app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
 
-app.get('/createpost', (req, res) => {
-  res.render('pages/createpost', { title: 'Create a New Post' });
+app.get('/createpost', async (req, res) => {
+  const allHalls = await db.any('SELECT * FROM dining_halls');
+  res.render('pages/createpost', { title: 'Create a New Post', allHalls });
 });
 
 app.get('/home', (req, res) => {
@@ -147,6 +151,63 @@ app.get('/home', (req, res) => {
     return res.redirect('/login'); //if not logged in
   }
   res.render('pages/home');
+});
+
+app.get('/logout',(req, res) => {
+  //Remove user
+  req.session.destroy();
+  res.redirect('/login');
+});
+
+app.post('/createpost', async (req, res) => {
+
+  const { picture, bio, location, rating } = req.body; //Find a way to do rating
+    
+  try {
+    const allHalls = await db.any('SELECT * FROM dining_halls');
+    // Ensure the user is logged in
+    if (!req.session.user) {
+      return res.render('pages/createpost', {
+        message: "Please Log In",
+        allHalls,
+        error: true,
+      });
+    }
+
+    // Extract user id from the session
+    const user_id = req.session.user.user_id;
+
+    console.log('Check location value: ', location);
+    // Find the dining hall id
+    const find_hall = await db.oneOrNone(
+      'SELECT * FROM dining_halls WHERE hall_name = $1',
+      [location]
+    );
+
+    // Invalid Hall name
+    if (!find_hall){
+      return res.render('pages/createpost', {
+        message: "Invalid Dining Hall",
+        allHalls,
+        error: true,
+      });
+    }
+
+    console.log('Check rating value: ', rating);
+
+    await db.none(
+      'INSERT into posts(poster_id, reviewed_hall_id, hall_rating, image_url, post_content) VALUES($1, $2, $3, $4, $5)',
+      [user_id, find_hall.hall_id, rating, picture, bio]
+    );
+
+    res.redirect('/home');
+  } catch (error) {
+    return res.render('pages/home', {
+      message: "An error occurred. Please try again.",
+      error: true
+    });
+  }
+  
 });
 
 app.get('/logout', (req, res) => {
