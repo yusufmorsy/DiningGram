@@ -9,6 +9,8 @@
     :root {
       --navbar-height: 56px; /* Adjust based on your navbar's actual height */
       --sidebar-width: 300px;
+      --card-max-width: 600px; /* Maximum width for post cards */
+      --card-margin: 20px; /* Margin between post cards */
     }
 
     body, html {
@@ -17,7 +19,11 @@
       padding: 0;
     }
 
+    /* Flexbox layout for main-content to center post cards */
     .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       margin-top: var(--navbar-height);
       margin-right: var(--sidebar-width);
       height: calc(100vh - var(--navbar-height));
@@ -68,6 +74,129 @@
       border-radius: 4px;
       border: 2px solid #f1f1f1;
     }
+
+    /* Enhanced Styles for Posts */
+    .post-card {
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: var(--card-max-width);
+      width: 100%;
+      margin-bottom: var(--card-margin);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .post-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .profile-pic {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #f0f0f0;
+    }
+
+    .user-info {
+      margin-left: 15px;
+    }
+
+    .username {
+      font-size: 1.1rem;
+      color: #343a40;
+    }
+
+    .location {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+
+    .post-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .stars .star {
+      font-size: 1.5rem;
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .stars .highlighted {
+      color: #f39c12;
+    }
+
+    .caption {
+      font-size: 1rem;
+      color: #495057;
+      margin-top: 10px;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .post-actions .btn {
+      margin-right: 10px;
+    }
+
+    .comment-box {
+      margin-top: 15px;
+    }
+
+    .comment-box textarea {
+      width: 100%;
+      height: 80px;
+      resize: vertical;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ced4da;
+      font-size: 0.95rem;
+    }
+
+    .comment-buttons .btn {
+      min-width: 80px;
+    }
+
+    .comment-error {
+      margin-top: 5px;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 576px) {
+      .profile-pic {
+        width: 50px;
+        height: 50px;
+      }
+
+      .username {
+        font-size: 1rem;
+      }
+
+      .location {
+        font-size: 0.8rem;
+      }
+
+      .stars .star {
+        font-size: 1.3rem;
+      }
+
+      .caption {
+        font-size: 0.95rem;
+      }
+
+      .post-actions .btn {
+        margin-right: 8px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -76,20 +205,110 @@
   <!-- Main Content and Sidebar -->
   <div class="main-content">
     {{{body}}}
-    <!-- Example Content -->
-    <h2>Scrollable Main Content</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus...</p>
-    <!-- Repeat or generate more content to enable scrolling -->
-    <p>... (Additional Content) ...</p>
+    <!-- Posts Display -->
+    
+    {{#if posts.length}}
+      {{#each posts}}
+        <div class="post-card">
+          <!-- Post Header -->
+          <div class="d-flex align-items-center mb-3">
+            <img src="{{this.profile_pic_url}}" alt="{{this.username}}'s Profile Picture" class="profile-pic">
+            <div class="user-info">
+              <p class="username mb-0">{{this.username}}</p>
+              <p class="location">{{this.location}}</p>
+            </div>
+          </div>
+
+          <!-- Post Image -->
+          {{#if this.post_image_url}}
+            <div class="post-image mb-3">
+              <img src="{{this.post_image_url}}" alt="Post Image">
+            </div>
+          {{/if}}
+
+          <!-- Post Actions -->
+          <div class="post-actions">
+            <div class="stars me-3">
+              {{!-- Render star ratings --}}
+              {{#each (range 1 5)}}
+                <span class="star {{#if (lte this ../hall_rating)}}highlighted{{/if}}" data-rating="{{this}}">★</span>
+              {{/each}}
+            </div>
+            <button class="btn btn-outline-primary btn-sm me-2 comment-button">Comment</button>
+            <button class="btn btn-outline-secondary btn-sm save-button">Save</button>
+          </div>
+
+          <!-- Caption -->
+          <p class="caption">{{this.post_content}}</p>
+
+          <!-- Hidden comment box -->
+          <div class="comment-box" style="display: none;">
+            <textarea class="form-control mb-2" placeholder="Write a comment..."></textarea>
+            <div class="comment-buttons d-flex">
+              <button class="btn btn-primary btn-sm post-comment me-2">Post</button>
+              <button class="btn btn-secondary btn-sm cancel-comment">Cancel</button>
+            </div>
+            <p class="comment-error" style="display: none; color: red;">Please enter a comment.</p>
+          </div>
+        </div>
+      {{/each}}
+    {{else}}
+      <p>No posts available.</p>
+    {{/if}}
+    <p>End of Feed</p>
   </div>
 
   <div class="sidebar">
-    <h3>Fixed Sidebar</h3>
-    <p>This sidebar remains fixed below the navbar while you scroll the main content.</p>
-    <!-- Add more sidebar content as needed -->
+    <h3>Dining Hall Options</h3>
+    <ul class="list-unstyled">
+      <li>C4C Dining Hall</li>
+      <li>Village Center Dining</li>
+      <li>Sewall Dining Hall</li>
+      <li>UMC Dining</li>
+      <li>Saved Posts</li>
+      <!-- Add more sidebar content as needed -->
+    </ul>
   </div>
 
   <!-- Bootstrap JS (optional) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const commentButtons = document.querySelectorAll('.comment-button');
+      commentButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const commentBox = button.closest('.post-card').querySelector('.comment-box');
+          commentBox.style.display = commentBox.style.display === 'none' ? 'block' : 'none';
+        });
+      });
+
+      const cancelButtons = document.querySelectorAll('.cancel-comment');
+      cancelButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const commentBox = button.closest('.comment-box');
+          commentBox.style.display = 'none';
+        });
+      });
+
+      const postButtons = document.querySelectorAll('.post-comment');
+      postButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const commentBox = button.closest('.comment-box');
+          const textarea = commentBox.querySelector('textarea');
+          const error = commentBox.querySelector('.comment-error');
+
+          if (textarea.value.trim() === '') {
+            error.style.display = 'block';
+          } else {
+            error.style.display = 'none';
+            // Implement comment posting logic here (e.g., AJAX request)
+            alert('Comment posted: ' + textarea.value);
+            textarea.value = '';
+            commentBox.style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>

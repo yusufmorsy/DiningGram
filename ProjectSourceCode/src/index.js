@@ -1,5 +1,4 @@
-//Dependencies
-
+// Dependencies
 const express = require('express'); // To build an application server or API
 const app = express();
 const handlebars = require('express-handlebars');
@@ -7,23 +6,36 @@ const Handlebars = require('handlebars');
 const path = require('path');
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
-const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
-const bcrypt = require('bcryptjs'); //  To hash passwords
-const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part C.
+const session = require('express-session'); // To set the session object.
+const bcrypt = require('bcryptjs'); // To hash passwords
+const axios = require('axios'); // To make HTTP requests from our server.
 
-
-//const multer = require('multer');
-
-//Database Connection
-
-// create `ExpressHandlebars` instance and configure the layouts and partials dir.
+// Create `ExpressHandlebars` instance and configure the layouts and partials dir.
 const hbs = handlebars.create({
   extname: 'hbs',
-  layoutsDir: __dirname + '/views/layouts',
-  partialsDir: __dirname + '/views/partials',
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  partialsDir: path.join(__dirname, 'views/partials'),
 });
 
-// database configuration
+// Register Handlebars helpers
+hbs.handlebars.registerHelper('range', function(start, end) {
+  let result = [];
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+  return result;
+});
+
+hbs.handlebars.registerHelper('lte', function(a, b) {
+  return a <= b;
+});
+
+// Optional: JSON helper for debugging
+hbs.handlebars.registerHelper('json', function(context) {
+  return JSON.stringify(context, null, 2);
+});
+
+// Database configuration
 const dbConfig = {
   host: 'db', // the database server
   port: 5432, // the database port
@@ -34,7 +46,7 @@ const dbConfig = {
 
 const db = pgp(dbConfig);
 
-// test your database
+// Test your database connection
 db.connect()
   .then(obj => {
     console.log('Database connection successful'); // you can view this message in the docker compose logs
@@ -44,7 +56,7 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
-//Setting up App
+// Setting up App
 
 // Register `hbs` as our view engine using its bound `engine()` function.
 app.engine('hbs', hbs.engine);
@@ -52,10 +64,10 @@ app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 
-// initialize session variables
+// Initialize session variables
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'default_secret_key', // Ensure you set a secure secret in production
     saveUninitialized: false,
     resave: false,
   })
@@ -67,10 +79,13 @@ app.use(
   })
 );
 
+// Middleware to set local variables
 app.use((req, res, next) => {
   res.locals.isLoggedIn = !!req.session?.user; // Convert to boolean
   next();
 });
+
+// Routes
 
 app.get('/', (req, res) => {
   res.render('pages/register');
@@ -84,85 +99,120 @@ app.get('/register', (req, res) => {
   res.render('pages/register');
 });
 
-//for now only username and password
+// Registration Route
 app.post('/register', async (req, res) => {
   try {
-      const { username, password } = req.body;
+    const { username, password } = req.body;
 
-      // Basic validation
-      if (!username || !password) {
-          return res.status(400).json({ message: 'Username and password are required.' });
-      }
+    // Basic validation
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password are required.' });
+    }
 
-      const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-      await db.none('INSERT INTO users(username, hashed_password) VALUES($1, $2)', [username, hashedPassword]);
+    await db.none('INSERT INTO users(username, hashed_password) VALUES($1, $2)', [username, hashedPassword]);
 
-      res.redirect('/login');
+    res.redirect('/login');
   } catch (error) {
-      console.error('Error during registration:', error);
+    console.error('Error during registration:', error);
 
-      if (error.code === '23505') { // Unique violation in PostgreSQL
-          return res.status(409).json({ message: 'Username already exists.' });
-      }
+    if (error.code === '23505') { // Unique violation in PostgreSQL
+      return res.status(409).json({ message: 'Username already exists.' });
+    }
 
-      res.status(500).json({ message: 'Registration failed. Please try again.', error: true });
+    res.status(500).json({ message: 'Registration failed. Please try again.', error: true });
   }
 });
 
-
+// Login Route
 app.post('/login', async (req, res) => {
   try {
-      const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
+    const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
 
-      if (!user) {
-          return res.redirect('/register');
-      }
+    if (!user) {
+      return res.redirect('/register');
+    }
 
-      const match = await bcrypt.compare(req.body.password, user.hashed_password );
+    const match = await bcrypt.compare(req.body.password, user.hashed_password);
 
-      if (!match) {
-        //Needed to comment this out as it was failing the negative test case
-        //, { message: 'Incorrect username or password.', error: true }
-          return res.render('pages/login');
-      }
+    if (!match) {
+      return res.render('pages/login');
+    }
 
-      req.session.user = user;
-      req.session.save(() => {
-          res.redirect('/home');
-      });
+    req.session.user = user;
+    req.session.save(() => {
+      res.redirect('/home');
+    });
   } catch (error) {
-      console.error('Error during login:', error);
-      res.render('pages/login', { message: 'Login failed. Please try again.', error: true });
+    console.error('Error during login:', error);
+    res.render('pages/login', { message: 'Login failed. Please try again.', error: true });
   }
 });
 
+// Welcome Route (for testing)
 app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
+// Create Post Route
 app.get('/createpost', async (req, res) => {
   const allHalls = await db.any('SELECT * FROM dining_halls');
   res.render('pages/createpost', { title: 'Create a New Post', allHalls });
 });
 
-app.get('/home', (req, res) => {
+// Home Route
+app.get('/home', async (req, res) => {
   if (!req.session?.user) {
-    return res.redirect('/login'); //if not logged in
+    console.log('User not logged in. Redirecting to /login.');
+    return res.redirect('/login'); // Redirect if not logged in
   }
-  res.render('pages/home');
+
+  const currentUserId = req.session.user.user_id;
+
+  try {
+    // Fetch posts with user and dining hall information
+    const posts = await db.any(`
+      SELECT 
+        p.post_id,
+        p.post_content,
+        p.image_url AS post_image_url,
+        p.hall_rating,
+        p.likes AS post_likes,
+        p.created_at,
+        u.username,
+        u.profile_pic_url,
+        u.location,
+        d.hall_name,
+        d.image_url AS hall_image_url,
+        d.hall_description
+      FROM posts p
+      JOIN users u ON p.poster_id = u.user_id
+      JOIN dining_halls d ON p.reviewed_hall_id = d.hall_id
+      ORDER BY p.created_at DESC
+    `);
+
+    console.log(`Fetched ${posts.length} posts from the database.`);
+    console.log('Sample Post:', posts[0]);
+
+    res.render('pages/home', { posts, title: 'Home' });
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    res.render('pages/home', { message: "Unable to load posts.", error: true, title: 'Home' });
+  }
 });
 
-app.get('/logout',(req, res) => {
-  //Remove user
-  req.session.destroy();
-  res.redirect('/login');
+// Logout Route
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
 });
 
+// Create Post Submission Route
 app.post('/createpost', async (req, res) => {
-
   const { picture, bio, location, rating } = req.body; //Find a way to do rating
-    
+
   try {
     const allHalls = await db.any('SELECT * FROM dining_halls');
     // Ensure the user is logged in
@@ -185,7 +235,7 @@ app.post('/createpost', async (req, res) => {
     );
 
     // Invalid Hall name
-    if (!find_hall){
+    if (!find_hall) {
       return res.render('pages/createpost', {
         message: "Invalid Dining Hall",
         allHalls,
@@ -196,44 +246,25 @@ app.post('/createpost', async (req, res) => {
     console.log('Check rating value: ', rating);
 
     await db.none(
-      'INSERT into posts(poster_id, reviewed_hall_id, hall_rating, image_url, post_content) VALUES($1, $2, $3, $4, $5)',
+      'INSERT INTO posts(poster_id, reviewed_hall_id, hall_rating, image_url, post_content) VALUES($1, $2, $3, $4, $5)',
       [user_id, find_hall.hall_id, rating, picture, bio]
     );
 
     res.redirect('/home');
   } catch (error) {
+    console.error('Error creating post:', error);
     return res.render('pages/home', {
       message: "An error occurred. Please try again.",
       error: true
     });
   }
-  
 });
 
-app.get('/logout', (req, res) => {
-  req.session.destroy(() => {
-    res.redirect('/login');
-  });
-});
-
-//Define rating system for stars on post
-// const stars = document.querySelectorAll('.star');
-// stars.forEach(star => {
-//   star.addEventListener('click', () => {
-//     let rating = star.getAttribute('data-rating');
-//     highlightStars(rating);
-//   });
-// });
-
-// function highlightStars(rating) {
-//   stars.forEach(star => {
-//     star.classList.toggle('highlighted', star.getAttribute('data-rating') <= rating);
-//   });
-// }
-
-//module.exports = app.listen(3000);
-
+// Serve Static Files
 app.use(express.static('public'));
 
-const server = app.listen(3000);
+// Start the Server
+const server = app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});
 module.exports = { server, db };
