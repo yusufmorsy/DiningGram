@@ -36,12 +36,11 @@ CREATE TABLE posts (
 
 -- 4. Comments Table
 CREATE TABLE comments (
-    comment_id SERIAL PRIMARY KEY,
-    commenter_id INT NOT NULL,
-    likes INT DEFAULT 0, -- Number of likes on the comment
-    comment_content TEXT NOT NULL, -- Content of the comment
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Timestamp of comment creation
-    FOREIGN KEY (commenter_id) REFERENCES users(user_id) ON DELETE CASCADE
+  comment_id SERIAL PRIMARY KEY,
+  post_id INT REFERENCES posts(post_id) ON DELETE CASCADE,
+  user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+  comment_content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 5. Post to Comment Table
