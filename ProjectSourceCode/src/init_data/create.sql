@@ -1,3 +1,12 @@
+-- 'Refreshing' SQL tables in reverse dependency order
+DROP TABLE IF EXISTS liked_posts;
+DROP TABLE IF EXISTS tagged_posts;
+DROP TABLE IF EXISTS post_to_comment;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS dining_halls;
+DROP TABLE IF EXISTS users;
+
 -- 1. Users Table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
