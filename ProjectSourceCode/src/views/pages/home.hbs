@@ -213,31 +213,28 @@
   </style>
 </head>
 <body>
-  <!-- Navbar is already included in the main Handlebars layout -->
-
   <!-- Main Content and Sidebar -->
   <div class="main-content">
-    <!-- Dynamic Header -->
+    <!-- Header -->
     {{#if header}}
       <h2 class="mb-4">{{header}}</h2>
     {{else}}
       <h1>No Header</h1>
     {{/if}}
-    <!-- <h1>Hello World</h1> -->
 
     <!-- Posts Display -->
     {{#if posts.length}}
       {{#each posts}}
         <div class="post-card">
-          <!-- Hidden Post ID for Save Functionality -->
+          <!-- Hidden Post ID -->
           <input type="hidden" class="post_id" value="{{this.post_id}}">
-          
+
           <!-- Post Header -->
           <div class="d-flex align-items-center mb-3">
             <img src="{{this.profile_pic_url}}" alt="{{this.username}}'s Profile Picture" class="profile-pic">
             <div class="user-info">
               <p class="username mb-0">{{this.username}}</p>
-              <p class="location">{{this.hall_name}}</p> <!-- Displaying hall_location -->
+              <p class="location">{{this.hall_name}}</p>
             </div>
           </div>
 
@@ -263,7 +260,21 @@
           <!-- Caption -->
           <p class="caption">{{this.post_content}}</p>
 
-          <!-- Hidden comment box -->
+          <!-- Comments Section -->
+          {{#if this.comments.length}}
+            <div class="comments">
+              <h4>Comments:</h4>
+              <ul>
+                {{#each this.comments}}
+                  <li>
+                    <strong>{{this.username}}:</strong> {{this.comment_content}} <em>({{this.created_at}})</em>
+                  </li>
+                {{/each}}
+              </ul>
+            </div>
+          {{/if}}
+
+          <!-- Hidden Comment Box -->
           <div class="comment-box" style="display: none;">
             <textarea class="form-control mb-2" placeholder="Write a comment..."></textarea>
             <div class="comment-buttons d-flex">
@@ -274,9 +285,6 @@
           </div>
         </div>
       {{/each}}
-
-      <!-- Pagination Controls (optional, not implemented in index.js) -->
-      <!-- You can add pagination here if needed -->
 
     {{else}}
       <p>No posts available.</p>
@@ -319,7 +327,7 @@
 
       const postButtons = document.querySelectorAll('.post-comment');
       postButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', async () => {
           const commentBox = button.closest('.comment-box');
           const textarea = commentBox.querySelector('textarea');
           const error = commentBox.querySelector('.comment-error');
@@ -328,10 +336,31 @@
             error.style.display = 'block';
           } else {
             error.style.display = 'none';
-            // Implement comment posting logic here (e.g., AJAX request)
-            alert('Comment posted: ' + textarea.value);
-            textarea.value = '';
-            commentBox.style.display = 'none';
+            const commentContent = textarea.value.trim();
+            const postId = button.closest('.post-card').querySelector('.post_id').value;
+
+            try {
+              const response = await fetch('/comment', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ post_id: postId, comment_content: commentContent })
+              });
+
+              const result = await response.json();
+
+              if (result.success) {
+                // Optionally, update the comment section dynamically
+                // For simplicity, reload the page to show the new comment
+                location.reload();
+              } else {
+                alert('Failed to post comment: ' + result.message);
+              }
+            } catch (error) {
+              console.error('Error posting comment:', error);
+              alert('An error occurred while posting the comment.');
+            }
           }
         });
       });
