@@ -346,9 +346,49 @@ app.post('/comment', isAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/profile', (req, res) => {
-  res.render('/profile');
+app.get('/profile/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    // Fetch user details
+    const user = await db.one('SELECT * FROM users WHERE user_id = $1', [userId]);
+
+    // Fetch posts and associated comments for the user
+    const posts = await db.any(`
+      SELECT 
+        p.post_id, p.image_url, p.post_content, p.likes, p.hall_rating, d.hall_name,
+        COALESCE(json_agg(jsonb_build_object('username', u.username, 'comment_content', c.comment_content))
+        FILTER (WHERE c.comment_id IS NOT NULL), '[]') AS comments
+      FROM posts p
+      LEFT JOIN dining_halls d ON p.reviewed_hall_id = d.hall_id
+      LEFT JOIN comments c ON p.post_id = c.post_id
+      LEFT JOIN users u ON c.user_id = u.user_id
+      WHERE p.poster_id = $1
+      GROUP BY p.post_id, d.hall_name
+    `, [userId]);
+
+    // Render profile page
+    res.render('pages/profile', {
+      username: user.username,
+      full_name: user.full_name || 'Anonymous User',
+      profile_biography: user.profile_biography || 'No bio available.',
+      profile_pic_url: user.profile_pic_url,
+      location: user.location,
+      posts: posts,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error loading profile.');
+  }
 });
+
+app.get('/profile', (req, res) => {
+  if (!req.session?.user) {
+    return res.redirect('/login'); // Redirect to login if not logged in
+  }
+  res.redirect(`/profile/${req.session.user.user_id}`);
+});
+
 
 // Logout Route
 app.get('/logout', (req, res) => {
