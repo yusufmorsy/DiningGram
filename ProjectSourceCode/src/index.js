@@ -9,6 +9,10 @@ const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object.
 const bcrypt = require('bcryptjs'); // To hash passwords
 
+// For file uploads of larger files
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
+app.use(bodyParser.json({ limit: "10mb" }));
+
 // Create `ExpressHandlebars` instance and configure the layouts and partials dir.
 const hbs = handlebars.create({
   extname: 'hbs',
@@ -345,23 +349,17 @@ app.post('/createpost', isAuthenticated, async (req, res) => {
   const { picture, bio, location, rating } = req.body; // Find a way to do rating
 
   try {
-    const allHalls = await db.any('SELECT * FROM dining_halls');
     const user_id = req.session.user.user_id;
-
-    // Find the dining hall id
-    const find_hall = await db.oneOrNone(
-      'SELECT * FROM dining_halls WHERE hall_name = $1',
-      [location]
-    );
 
     await db.none(
       'INSERT INTO posts(poster_id, reviewed_hall_id, hall_rating, image_url, post_content) VALUES($1, $2, $3, $4, $5)',
-      [user_id, find_hall.hall_id, rating, picture, bio]
+      [user_id, location, rating, picture, bio]
     );
 
     res.redirect('/home');
   } catch (error) {
     console.error('Error creating post:', error);
+    const allHalls = await db.any('SELECT * FROM dining_halls');
     return res.render('pages/createpost', {
       message: "An error occurred. Please try again.",
       error: true,
