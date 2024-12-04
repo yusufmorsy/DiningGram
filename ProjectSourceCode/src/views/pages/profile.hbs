@@ -1,30 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Page</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="profile-container">
-    <div class="profile-header">
-      <div class="profile-picture">
-        <img src="profile-pic.jpg" alt="Profile Picture">
+<link rel="stylesheet" href="/css/profile.css">
+<div  id="profile-page" class="container mt-4">
+    <!-- Profile Header -->
+    <div class="row mb-4 align-items-center">
+      <div class="col-md-4 text-center">
+        <img src="{{profile_pic_url}}" alt="{{username}}'s Profile Picture" class="rounded-circle img-thumbnail">
       </div>
-      <div class="profile-details">
-        <h2 class="username">username</h2>
-        <p class="bio">example bio goes here. i love food!</p>
+      <div class="col-md-8">
+        <h1 class="fw-bold">{{username}}</h1>
+        <p class="text-muted">{{full_name}}</p>
+        <p class="text-secondary">{{profile_biography}}</p>
+        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
       </div>
     </div>
-    <div class="photo-grid">
-      <img src="photo1.jpg" alt="Photo 1">
-      <img src="photo2.jpg" alt="Photo 2">
-      <img src="photo3.jpg" alt="Photo 3">
-      <img src="photo4.jpg" alt="Photo 4">
-      <img src="photo5.jpg" alt="Photo 5">
-      <img src="photo6.jpg" alt="Photo 6">
+
+    <!-- Posts Section -->
+    <div class="row">
+      <h2 class="fw-bold mb-4">{{username}}'s Posts</h2>
+      {{#if posts.length}}
+        <div class="row g-1">
+          {{#each posts}}
+            <div class="col-md-4">
+              <div class="card shadow-sm">
+                <img src="{{image_url}}" class="card-img-top" alt="Post Image">
+                <div class="card-body">
+                  <p class="card-text">{{post_content}}</p>
+                  <p class="small text-muted">
+                    <strong>Rating:</strong> {{hall_rating}}/5
+                  </p>
+                  <p class="small"><strong>Dining Hall:</strong> {{hall_name}}</p>
+                  <hr>
+                  <h6 class="fw-bold">Comments</h6>
+                  <ul class="list-unstyled">
+                    {{#each comments}}
+                      <li><strong>{{username}}:</strong> {{comment_content}}</li>
+                    {{else}}
+                      <li class="text-muted">No comments yet.</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{else}}
+        <p class="text-muted">No posts to display.</p>
+      {{/if}}
     </div>
   </div>
-</body>
-</html>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/profile/{{userId}}/edit" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="profilePicture" class="form-label">Profile Picture</label>
+                        <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*">
+                    </div>
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" name="fullName" value="{{full_name}}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Biography</label>
+                        <textarea class="form-control" id="bio" name="bio" rows="3" required>{{profile_biography}}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
