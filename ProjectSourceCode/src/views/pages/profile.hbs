@@ -1,81 +1,91 @@
 <link rel="stylesheet" href="/css/profile.css">
-<div  id="profile-page" class="container mt-4">
-    <!-- Profile Header -->
-    <div class="row mb-4 align-items-center">
-      <div class="col-md-4 text-center">
-        <img src="{{profile_pic_url}}" alt="{{username}}'s Profile Picture" class="rounded-circle img-thumbnail">
-      </div>
-      <div class="col-md-8">
-        <h1 class="fw-bold">{{username}}</h1>
-        <p class="text-muted">{{full_name}}</p>
-        <p class="text-secondary">{{profile_biography}}</p>
-        <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
-      </div>
+<div id="profile-page" class="container mt-4">
+  <!-- Profile Header -->
+  <div class="row mb-4 align-items-center">
+    <div class="col-md-4 text-center">
+      <img src="{{profile_pic_url}}" alt="{{username}}'s Profile Picture" class="rounded-circle img-thumbnail">
     </div>
-
-    <!-- Posts Section -->
-    <div class="row">
-      <h2 class="fw-bold mb-4">{{username}}'s Posts</h2>
-      {{#if posts.length}}
-        <div class="row g-1">
-          {{#each posts}}
-            <div class="col-md-4">
-              <div class="card shadow-sm">
-                <img src="{{image_url}}" class="card-img-top" alt="Post Image">
-                <div class="card-body">
-                  <p class="card-text">{{post_content}}</p>
-                  <p class="small text-muted">
-                    <strong>Rating:</strong> {{hall_rating}}/5
-                  </p>
-                  <p class="small"><strong>Dining Hall:</strong> {{hall_name}}</p>
-                  <hr>
-                  <h6 class="fw-bold">Comments</h6>
-                  <ul class="list-unstyled">
-                    {{#each comments}}
-                      <li><strong>{{username}}:</strong> {{comment_content}}</li>
-                    {{else}}
-                      <li class="text-muted">No comments yet.</li>
-                    {{/each}}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          {{/each}}
-        </div>
-      {{else}}
-        <p class="text-muted">No posts to display.</p>
+    <div class="col-md-8">
+      <h1 class="fw-bold">{{username}}</h1>
+      <p class="text-muted">{{full_name}}</p>
+      <p class="text-secondary">{{profile_biography}}</p>
+      {{#if isCurrentUser}}
+      <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit
+        Profile</button>
       {{/if}}
     </div>
   </div>
 
+  <!-- Posts Section -->
+  <div class="row">
+    <h2 class="fw-bold mb-4">{{username}}'s Posts</h2>
+    {{#if posts.length}}
+    <div class="row g-1">
+      {{#each posts}}
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <img src="{{image_url}}" class="card-img-top" alt="Post Image">
+          <div class="card-body">
+            <p class="card-text">{{post_content}}</p>
+            <p class="small text-muted">
+              <strong>Rating:</strong> {{hall_rating}}/5
+            </p>
+            <p class="small"><strong>Dining Hall:</strong> {{hall_name}}</p>
+            <hr>
+            <h6 class="fw-bold">Comments</h6>
+            <ul class="list-unstyled">
+              {{#each comments}}
+              <li><strong>{{username}}:</strong> {{comment_content}}</li>
+              {{else}}
+              <li class="text-muted">No comments yet.</li>
+              {{/each}}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+    {{else}}
+    <p class="text-muted">No posts to display.</p>
+    {{/if}}
+  </div>
+</div>
+
 <!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="/profile/{{userId}}/edit" method="POST" enctype="multipart/form-data">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="profilePicture" class="form-label">Profile Picture</label>
-                        <input type="file" class="form-control" id="profilePicture" name="profilePicture" accept="image/*">
-                    </div>
-                    <div class="mb-3">
-                        <label for="fullName" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="fullName" name="fullName" value="{{full_name}}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="bio" class="form-label">Biography</label>
-                        <textarea class="form-control" id="bio" name="bio" rows="3" required>{{profile_biography}}</textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editProfileForm" action="/profile/{{userId}}/edit" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="uploadPicture" class="form-label">Profile Picture</label>
+            <input type="file" class="form-control" id="pictureBase64Convert" name="uploadPicture">
+            <input type="hidden" id="picture" name="picture"> {{!-- To store/pass the base 64 string--}}
+          </div>
+          <div class="mb-3">
+            <label for="fullName" class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="fullName" name="fullName" value="{{full_name}}" required>
+          </div>
+          <div class="mb-3">
+            <label for="bio" class="form-label">Biography</label>
+            <textarea class="form-control" id="bio" name="bio" rows="3" required>{{profile_biography}}</textarea>
+          </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
+
+
+
+{{!-- Client-side base64 encoding of file --}}
+<script src="/js/filebase64encode.js"></script>
+<script>EncodeFileAsBase64("editProfileForm", "pictureBase64Convert", "picture");</script>

@@ -306,6 +306,7 @@ app.post('/comment', isAuthenticated, async (req, res) => {
 
 app.get('/profile/:userId', async (req, res) => {
   const userId = req.params.userId;
+  const currentUserId = req.session?.user?.user_id;
 
   try {
     // Fetch user details
@@ -327,12 +328,13 @@ app.get('/profile/:userId', async (req, res) => {
 
     // Render profile page
     res.render('pages/profile', {
+      userId,
       username: user.username,
       full_name: user.full_name || 'Anonymous User',
       profile_biography: user.profile_biography || 'No bio available.',
       profile_pic_url: user.profile_pic_url,
-      location: user.location,
       posts: posts,
+      isCurrentUser: currentUserId === parseInt(userId),
     });
   } catch (err) {
     console.error(err);
@@ -345,6 +347,37 @@ app.get('/profile', (req, res) => {
     return res.redirect('/login'); // Redirect to login if not logged in
   }
   res.redirect(`/profile/${req.session.user.user_id}`);
+});
+
+app.post('/profile/:userId/edit', async (req, res) => {
+  const { userId } = req.params;
+  const { fullName, bio, picture: profilePicture } = req.body;
+
+  try {
+    const query = `
+      UPDATE users
+      SET 
+        full_name = $1,
+        profile_biography = $2,
+        profile_pic_url = $3
+      WHERE user_id = $4
+    `;
+    
+    await db.none(query, [
+      fullName || null, 
+      bio || null, 
+      profilePicture || null, 
+      userId
+    ]);
+
+    console.log('Profile updated successfully');
+
+    // Redirect back to the profile page
+    res.redirect(`/profile/${userId}`);
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).send('Failed to update profile.');
+  }
 });
 
 // Route to handle saving a post
