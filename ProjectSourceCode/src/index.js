@@ -345,6 +345,7 @@ app.get('/profile', (req, res) => {
     return res.redirect('/login'); // Redirect to login if not logged in
   }
   res.redirect(`/profile/${req.session.user.user_id}`);
+});
 
 // Route to handle saving a post
 app.post('/savepost', isAuthenticated, async (req, res) => {
