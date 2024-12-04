@@ -1,7 +1,6 @@
 -- 'Refreshing' SQL tables in reverse dependency order
 DROP TABLE IF EXISTS liked_posts;
 DROP TABLE IF EXISTS tagged_posts;
-DROP TABLE IF EXISTS post_to_comment;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS dining_halls;
@@ -52,16 +51,7 @@ CREATE TABLE comments (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 5. Post to Comment Table
-CREATE TABLE post_to_comment (
-    post_id INT NOT NULL,
-    comment_id INT NOT NULL,
-    PRIMARY KEY (post_id, comment_id), -- Ensures unique post-comment relationships
-    FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
-    FOREIGN KEY (comment_id) REFERENCES comments(comment_id) ON DELETE CASCADE
-);
-
--- 6. Tagged Posts Table
+-- 5. Tagged Posts Table
 CREATE TABLE tagged_posts (
     user_id INT NOT NULL,
     post_id INT NOT NULL,
@@ -70,7 +60,7 @@ CREATE TABLE tagged_posts (
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
 );
 
--- 7. Liked Posts Table
+-- 6. Liked Posts Table
 CREATE TABLE liked_posts (
     user_id INT NOT NULL,
     post_id INT NOT NULL,
