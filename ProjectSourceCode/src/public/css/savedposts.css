@@ -1,0 +1,105 @@
+.saved-posts .post-card {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px; /* Slightly wider cards */
+    width: 100%;
+    margin-bottom: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .saved-posts .post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .saved-posts .profile-pic {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #f0f0f0;
+  }
+  
+  .saved-posts .user-info {
+    margin-left: 15px;
+  }
+  
+  .saved-posts .username {
+    font-size: 1.1rem;
+    color: #343a40;
+  }
+  
+  .saved-posts .location {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .saved-posts .post-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .saved-posts .stars .star {
+    font-size: 1.4rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .saved-posts .stars .highlighted {
+    color: #f39c12;
+  }
+  
+  .saved-posts .caption {
+    font-size: 1rem;
+    color: #495057;
+    margin-top: 10px;
+  }
+  
+  .saved-posts .post-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  .saved-posts .post-actions .btn {
+    margin-right: 10px;
+  }
+  
+  .saved-posts .comments ul {
+    padding-left: 20px;
+  }
+  
+  .saved-posts .comments li {
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 992px) {
+    .saved-posts .post-card {
+      max-width: 100%; /* Ensure responsiveness */
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .saved-posts .profile-pic {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .saved-posts .username {
+      font-size: 1rem;
+    }
+  
+    .saved-posts .stars .star {
+      font-size: 1.2rem;
+    }
+  
+    .saved-posts .caption {
+      font-size: 0.9rem;
+    }
+  }
+  

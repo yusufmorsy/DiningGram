@@ -327,6 +327,22 @@ app.get('/profile/:userId', async (req, res) => {
       GROUP BY p.post_id, d.hall_name
     `, [userId]);
 
+    const savedPosts = await db.any(`
+      SELECT 
+        p.post_id, p.image_url AS post_image_url, p.post_content, p.likes, p.hall_rating,
+        u.user_id, u.username, u.profile_pic_url, d.hall_name,
+        COALESCE(json_agg(json_build_object('comment_id', c.comment_id, 'comment_content', c.comment_content, 'created_at', c.created_at, 'username', cu.username))
+        FILTER (WHERE c.comment_id IS NOT NULL), '[]') AS comments
+      FROM liked_posts lp
+      JOIN posts p ON lp.post_id = p.post_id
+      JOIN users u ON p.poster_id = u.user_id
+      LEFT JOIN dining_halls d ON p.reviewed_hall_id = d.hall_id
+      LEFT JOIN comments c ON p.post_id = c.post_id
+      LEFT JOIN users cu ON c.user_id = cu.user_id
+      WHERE lp.user_id = $1
+      GROUP BY p.post_id, u.user_id, u.username, u.profile_pic_url, d.hall_name
+    `, [userId]);
+
     // Render profile page
     res.render('pages/profile', {
       userId,
@@ -335,6 +351,7 @@ app.get('/profile/:userId', async (req, res) => {
       profile_biography: user.profile_biography || 'No bio available.',
       profile_pic_url: user.profile_pic_url,
       posts: posts,
+      savedPosts: savedPosts,
       isCurrentUser: currentUserId === parseInt(userId),
     });
   } catch (err) {
