@@ -130,7 +130,11 @@ app.post('/register', async (req, res) => {
 
     // Basic validation
     if (!username || !password) {
-      return res.status(400).json({ message: 'Username and password are required.' });
+      //return res.status(400).json({ message: 'Username and password are required.' });
+      return res.render('pages/register', {
+        message: "Username and password are required.",
+        error: true,
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -142,7 +146,11 @@ app.post('/register', async (req, res) => {
     console.error('Error during registration:', error);
 
     if (error.code === '23505') { // Unique violation in PostgreSQL
-      return res.status(409).json({ message: 'Username already exists.' });
+      //return res.status(409).json({ message: 'Username already exists.' });
+      return res.render('pages/register', {
+        message: "Username already exists.",
+        error: true,
+      });
     }
 
     res.status(500).json({ message: 'Registration failed. Please try again.', error: true });
@@ -161,7 +169,7 @@ app.post('/login', async (req, res) => {
     const match = await bcrypt.compare(req.body.password, user.hashed_password);
 
     if (!match) {
-      return res.render('pages/login');
+      return res.render('pages/login', { message: 'Invalid Password. Please try again.', error: true });
     }
 
     req.session.user = user;
@@ -305,7 +313,8 @@ app.post('/comment', isAuthenticated, async (req, res) => {
 
   // Basic validation
   if (!post_id || !comment_content.trim()) {
-    return res.status(400).json({ success: false, message: 'Post ID and comment content are required.' });
+    //return res.status(400).json({ success: false, message: 'Post ID and comment content are required.' });
+    return res.render('pages/home', { message: 'Post ID and comment content are required.', error: true });
   }
 
   try {
@@ -430,7 +439,8 @@ app.post('/savepost', isAuthenticated, async (req, res) => {
   const user_id = req.session.user.user_id;
 
   if (!post_id) {
-    return res.status(400).json({ success: false, message: 'Post ID is required.' });
+    //return res.status(400).json({ success: false, message: 'Post ID is required.' });
+    return res.render('pages/home', { message: 'Post ID is required.', error: true });
   }
 
   try {
