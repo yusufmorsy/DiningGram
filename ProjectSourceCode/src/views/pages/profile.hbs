@@ -27,9 +27,12 @@
           <img src="{{image_url}}" class="card-img-top" alt="Post Image">
           <div class="card-body">
             <p class="card-text">{{post_content}}</p>
-            <p class="small text-muted">
-              <strong>Rating:</strong> {{hall_rating}}/5
-            </p>
+            <div class="stars me-3">
+              {{!-- Render star ratings --}}
+              {{#each (range 1 5)}}
+                <span class="star {{#if (lte this ../hall_rating)}}highlighted{{/if}}" data-rating="{{this}}">★</span>
+              {{/each}}
+            </div>
             <p class="small"><strong>Dining Hall:</strong> {{hall_name}}</p>
             <hr>
             <h6 class="fw-bold">Comments</h6>
