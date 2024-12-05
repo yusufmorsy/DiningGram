@@ -236,6 +236,11 @@
     <h1>No Header</h1>
     {{/if}}
 
+    {{!-- Display Average Rating if available --}}
+      {{#if averageRating}}
+        <h4>Average Rating For This Hall: {{averageRating}} / 5</h4>
+      {{/if}}
+    
     <!-- Posts Display -->
     {{#if posts.length}}
     {{#each posts}}

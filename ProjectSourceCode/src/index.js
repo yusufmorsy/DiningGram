@@ -188,6 +188,7 @@ app.get('/home', isAuthenticated, async (req, res) => {
   try {
     let posts = [];
     let header = '';
+    let averageRating = null; // Initialize averageRating
 
     // Base query components
     const baseSelect = `
@@ -250,6 +251,18 @@ app.get('/home', isAuthenticated, async (req, res) => {
         ${groupBy}
         ORDER BY p.created_at DESC
       `, [hallName]);
+
+      // Fetch average rating for the dining hall
+      const avgResult = await db.oneOrNone(`
+        SELECT ROUND(AVG(hall_rating)::numeric, 1) AS average_rating
+        FROM posts p
+        JOIN dining_halls d ON p.reviewed_hall_id = d.hall_id
+        WHERE d.hall_name = $1
+      `, [hallName]);
+
+      if (avgResult && avgResult.average_rating) {
+        averageRating = avgResult.average_rating;
+      }
     } else if (filter === 'saved') {
       header = 'Your Saved Posts';
       posts = await db.any(`
@@ -269,12 +282,13 @@ app.get('/home', isAuthenticated, async (req, res) => {
       `);
     }
 
-    // Render the 'home' template with posts and header
+    // Render the 'home' template with posts, header, and averageRating
     res.render('pages/home', {
       title: 'Home',
       header,
       posts,
-      currentFilter: filter
+      currentFilter: filter,
+      averageRating // Pass averageRating to the template
     });
 
   } catch (error) {
@@ -282,6 +296,7 @@ app.get('/home', isAuthenticated, async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 // Route to handle comment submission
 app.post('/comment', isAuthenticated, async (req, res) => {
