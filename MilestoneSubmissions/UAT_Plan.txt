@@ -8,7 +8,7 @@ To test this feature, we will consider the following two test cases: the post wa
 
 Should they provide all the necessary information (positive test case), the post will be successfully created and then stored into the post table of the users_db database once submitted. This will be tested under the localhost environment. We expect the result to be a redirection to /home.
 
-Under the negative test case, we will consider that at least one of the fields is missing (i.e. dining hall name). Thus, we expect the post creation to fail and render the post creation page again.
+Under the negative test case, we will consider that at least one of the fields is missing (i.e. dining hall id). Thus, we expect the post creation to fail and render the post creation page again.
 
 
 
