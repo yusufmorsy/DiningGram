@@ -65,11 +65,11 @@ function EncodeFileAsBase64(formId, fileInputId, storeStringInputId){
       *:This is mostly to stop users who remove the 'required' keyword from the html tag
       for the file upload in createpost.hbs using Developer Tools.
     */
-    if (!file) {
-      alert("Please upload a picture before submitting.");
-      event.preventDefault();
-      return;
-    }
+    // if (!file) {
+    //   alert("Please upload a picture before submitting.");
+    //   event.preventDefault();
+    //   return;
+    // }
 
     // Creates new instance of FileReader object from the FileReader API
     const reader = new FileReader();

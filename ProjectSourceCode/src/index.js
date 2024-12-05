@@ -354,6 +354,17 @@ app.post('/profile/:userId/edit', async (req, res) => {
   const { fullName, bio, picture: profilePicture } = req.body;
 
   try {
+
+    let existingProfilePicture = profilePicture;
+
+    if (!profilePicture) {
+      const result = await db.one(
+        'SELECT profile_pic_url FROM users WHERE user_id = $1',
+        [userId]
+      );
+      existingProfilePicture = result.profile_pic_url;
+    }
+
     const query = `
       UPDATE users
       SET 
@@ -366,7 +377,7 @@ app.post('/profile/:userId/edit', async (req, res) => {
     await db.none(query, [
       fullName || null, 
       bio || null, 
-      profilePicture || null, 
+      existingProfilePicture, 
       userId
     ]);
 
