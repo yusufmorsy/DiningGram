@@ -1,48 +1,89 @@
 {{> message}}
 
+<style>
+  .center-card {
+    width: 50vw;
+    margin: 0 auto;
+  }
+
+  .rating {
+    display: flex;
+    justify-content: center;
+  }
+
+  #center-rating {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .stack-value {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 1vw;
+  }
+</style>
 
 <h2 class="text-center mb-4">Create a New Post</h2>
-<form id="createPostForm" action="/createpost" method="POST">
-  <div class="mb-3">
-    <label for="uploadPicture" class="form-label">Upload Picture</label>
-    <input type="file" class="form-control" id="pictureBase64Convert" name="uploadPicture" required>
-    <input type="hidden" id="picture" name="picture"> {{!-- To store/pass the base 64 string--}}
+<div class="card center-card">
+  <div class="card-body">
+    <form id="createPostForm" action="/createpost" method="POST">
+      <div class="mb-3">
+        <label for="uploadPicture" class="form-label">Upload Picture</label>
+        <input type="file" class="form-control" id="pictureBase64Convert" name="uploadPicture" required>
+        <input type="hidden" id="picture" name="picture"> {{!-- To store/pass the base 64 string--}}
+      </div>
+      <div class="mb-3">
+        <label for="bio" class="form-label">Bio</label>
+        <textarea class="form-control" id="bio" name="bio" rows="3" placeholder="Write a caption..."
+          required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <select class="form-select" id="location" name="location" required>
+          <option value="" disabled selected>Select a dining hall</option>
+          {{#each allHalls}}
+          <option value="{{this.hall_id}}">{{this.hall_name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <div class="mb-3" id="center-rating">
+        <label class="form-label" style="display: block; border-bottom: 1px solid #000;">Rating</label>
+        <div class="rating">
+          <div class="stack-value">
+            <input type="radio" id="rating-1" name="rating" value="1" required>
+            <label for="rating-1"><i class="fa fa-star"></i>1</label>
+          </div>
+
+          <div class="stack-value">
+            <input type="radio" id="rating-2" name="rating" value="2">
+            <label for="rating-2"><i class="fa fa-star"></i>2</label>
+          </div>
+
+          <div class="stack-value">
+            <input type="radio" id="rating-3" name="rating" value="3">
+            <label for="rating-3"><i class="fa fa-star"></i>3</label>
+          </div>
+
+          <div class="stack-value">
+            <input type="radio" id="rating-4" name="rating" value="4">
+            <label for="rating-4"><i class="fa fa-star"></i>4</label>
+          </div>
+
+          <div class="stack-value">
+            <input type="radio" id="rating-5" name="rating" value="5">
+            <label for="rating-5"><i class="fa fa-star"></i>5</label>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Post</button>
+    </form>
   </div>
-  <div class="mb-3">
-    <label for="bio" class="form-label">Bio</label>
-    <textarea class="form-control" id="bio" name="bio" rows="3" placeholder="Write a caption..." required></textarea>
-  </div>
-  <div class="mb-3">
-    <label for="location" class="form-label">Location</label>
-    <select class="form-select" id="location" name="location" required>
-      <option value="" disabled selected>Select a dining hall</option>
-      {{#each allHalls}}
-        <option value="{{this.hall_id}}">{{this.hall_name}}</option>
-      {{/each}}
-    </select>
-  </div>
-  <div class="mb-3">
-    <label class="form-label">Rating</label>
-    <div class="rating">
-      <input type="radio" id="rating-1" name="rating" value="1" required>
-      <label for="rating-1"><i class="fa fa-star"></i>1</label>
+</div>
 
-      <input type="radio" id="rating-2" name="rating" value="2">
-      <label for="rating-2"><i class="fa fa-star"></i>2</label>
-
-      <input type="radio" id="rating-3" name="rating" value="3">
-      <label for="rating-3"><i class="fa fa-star"></i>3</label>
-
-      <input type="radio" id="rating-4" name="rating" value="4">
-      <label for="rating-4"><i class="fa fa-star"></i>4</label>
-
-      <input type="radio" id="rating-5" name="rating" value="5">
-      <label for="rating-5"><i class="fa fa-star"></i>5</label>
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary w-100">Post</button>
-</form>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {{!-- Client-side base64 encoding of file --}}
 <script src="/js/filebase64encode.js"></script>
 <script>EncodeFileAsBase64("createPostForm", "pictureBase64Convert", "picture");</script>
