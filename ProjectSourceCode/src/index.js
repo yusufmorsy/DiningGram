@@ -198,6 +198,7 @@ app.get('/home', isAuthenticated, async (req, res) => {
         p.hall_rating,
         p.likes AS post_likes,
         p.created_at,
+        u.user_id,
         u.username,
         u.profile_pic_url,
         d.hall_name,
@@ -220,7 +221,7 @@ app.get('/home', isAuthenticated, async (req, res) => {
 
     const groupBy = `
       GROUP BY 
-        p.post_id, p.post_content, p.image_url, p.hall_rating, p.likes, p.created_at,
+        p.post_id, p.post_content, p.image_url, p.hall_rating, p.likes, p.created_at, u.user_id,
         u.username, u.profile_pic_url,
         d.hall_name, d.image_url, d.hall_description
     `;
