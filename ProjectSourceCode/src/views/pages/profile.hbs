@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="/css/profile.css">
+<link rel="stylesheet" href="/css/savedposts.css">
 <div id="profile-page" class="container mt-4">
   <!-- Profile Header -->
   <div class="row mb-4 align-items-center">
@@ -17,42 +18,142 @@
   </div>
 
   <!-- Posts Section -->
-  <div class="row">
-    <h2 class="fw-bold mb-4">{{username}}'s Posts</h2>
-    {{#if posts.length}}
-    <div class="row g-1">
-      {{#each posts}}
-      <div class="col-md-4">
-        <div class="card shadow-sm">
-          <img src="{{image_url}}" class="card-img-top" alt="Post Image">
-          <div class="card-body">
-            <p class="card-text">{{post_content}}</p>
-            <div class="stars me-3">
-              {{!-- Render star ratings --}}
-              {{#each (range 1 5)}}
-                <span class="star {{#if (lte this ../hall_rating)}}highlighted{{/if}}" data-rating="{{this}}">★</span>
-              {{/each}}
-            </div>
-            <p class="small"><strong>Dining Hall:</strong> {{hall_name}}</p>
-            <hr>
-            <h6 class="fw-bold">Comments</h6>
-            <ul class="list-unstyled">
-              {{#each comments}}
-              <li><strong>{{username}}:</strong> {{comment_content}}</li>
-              {{else}}
-              <li class="text-muted">No comments yet.</li>
-              {{/each}}
-            </ul>
+<div class="saved-posts">
+  <h2 class="fw-bold mb-4">{{username}}'s Posts</h2>
+  {{#if posts.length}}
+  <div class="row g-3 justify-content-start">
+    {{#each posts}}
+    <div class="col-md-6 col-lg-4 d-flex">
+      <div class="post-card flex-grow-1">
+        <!-- Hidden Post ID -->
+      <input type="hidden" class="post_id" value="{{this.post_id}}">
+        <!-- Post Image -->
+        {{#if this.image_url}}
+        <div class="post-image mb-3">
+          <img src="{{this.image_url}}" alt="Post Image" loading="lazy" class="img-fluid rounded">
+        </div>
+        {{/if}}
+
+        <!-- Post Content -->
+        <div class="post-content">
+          <p class="card-text mb-3">{{this.post_content}}</p>
+          <!-- Post Actions -->
+        <div class="post-actions">
+          <div class="stars me-3">
+            {{#each (range 1 5)}}
+            <span class="star {{#if (lte this ../hall_rating)}}highlighted{{/if}}" data-rating="{{this}}">★</span>
+            {{/each}}
           </div>
+          <button class="btn btn-outline-primary btn-sm comment-button">Comment</button>
+        </div>
+        </div>
+
+         <!-- Hidden Comment Box -->
+    <div class="comment-box" style="display: none;">
+      <textarea class="form-control mb-2" placeholder="Write a comment..."></textarea>
+      <div class="comment-buttons d-flex">
+        <button class="btn btn-primary btn-sm post-comment me-2">Post</button>
+        <button class="btn btn-secondary btn-sm cancel-comment">Cancel</button>
+      </div>
+      <p class="comment-error" style="display: none; color: red;">Please enter a comment.</p>
+    </div>
+
+        <!-- Comments Section -->
+        <div class="comments mt-3">
+          <h6 class="fw-bold">Comments</h6>
+          <ul class="list-unstyled mb-0">
+            {{#each this.comments}}
+            <li>
+              <strong>{{this.username}}:</strong> {{this.comment_content}}
+            </li>
+            {{else}}
+            <li class="text-muted">No comments yet.</li>
+            {{/each}}
+          </ul>
         </div>
       </div>
-      {{/each}}
     </div>
-    {{else}}
-    <p class="text-muted">No posts to display.</p>
-    {{/if}}
+    {{/each}}
   </div>
+  {{else}}
+  <p class="text-muted">No posts to display.</p>
+  {{/if}}
 </div>
+
+<!-- Saved Posts Section -->
+{{#if isCurrentUser}}
+<div class="saved-posts">
+  <h2 class="fw-bold mb-4">Saved Posts</h2>
+  {{#if savedPosts.length}}
+  <div class="row g-3 justify-content-start">
+    {{#each savedPosts}}
+    <div class="col-md-6 col-lg-4 d-flex">
+      <div class="post-card flex-grow-1">
+        <input type="hidden" class="post_id" value="{{this.post_id}}">
+
+        <!-- Post Header -->
+        <div class="d-flex align-items-center mb-3">
+          <a href="/profile/{{this.user_id}}" class="d-flex align-items-center text-decoration-none">
+            <img src="{{this.profile_pic_url}}" alt="{{this.username}}'s Profile Picture" class="profile-pic me-2">
+            <div class="user-info">
+              <p class="username mb-0">{{this.username}}</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Post Image -->
+        {{#if this.post_image_url}}
+        <div class="post-image mb-3">
+          <img src="{{this.post_image_url}}" alt="Post Image" loading="lazy">
+        </div>
+        {{/if}}
+
+        <!-- Post Actions -->
+        <div class="post-actions">
+          <div class="stars me-3">
+            {{#each (range 1 5)}}
+            <span class="star {{#if (lte this ../hall_rating)}}highlighted{{/if}}" data-rating="{{this}}">★</span>
+            {{/each}}
+          </div>
+          <button class="btn btn-outline-primary btn-sm comment-button">Comment</button>
+        </div>
+
+         <!-- Hidden Comment Box -->
+    <div class="comment-box" style="display: none;">
+      <textarea class="form-control mb-2" placeholder="Write a comment..."></textarea>
+      <div class="comment-buttons d-flex">
+        <button class="btn btn-primary btn-sm post-comment me-2">Post</button>
+        <button class="btn btn-secondary btn-sm cancel-comment">Cancel</button>
+      </div>
+      <p class="comment-error" style="display: none; color: red;">Please enter a comment.</p>
+    </div>
+
+        <!-- Caption -->
+        <p class="caption">{{this.post_content}}</p>
+
+       <!-- Comments Section -->
+        <div class="comments mt-3">
+          <h6 class="fw-bold">Comments</h6>
+          <ul class="list-unstyled mb-0">
+            {{#each this.comments}}
+            <li>
+              <strong>{{this.username}}:</strong> {{this.comment_content}}
+            </li>
+            {{else}}
+            <li class="text-muted">No comments yet.</li>
+            {{/each}}
+          </ul>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{else}}
+  <p class="text-muted">No saved posts to display.</p>
+  {{/if}}
+</div>
+{{/if}}
+
 
 <!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
@@ -92,3 +193,94 @@
 {{!-- Client-side base64 encoding of file --}}
 <script src="/js/filebase64encode.js"></script>
 <script>EncodeFileAsBase64("editProfileForm", "pictureBase64Convert", "picture");</script>
+<!-- Bootstrap JS (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Comment Functionality
+      const commentButtons = document.querySelectorAll('.comment-button');
+      commentButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const commentBox = button.closest('.post-card').querySelector('.comment-box');
+          commentBox.style.display = commentBox.style.display === 'none' ? 'block' : 'none';
+        });
+      });
+
+      const cancelButtons = document.querySelectorAll('.cancel-comment');
+      cancelButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const commentBox = button.closest('.comment-box');
+          commentBox.style.display = 'none';
+        });
+      });
+
+      const postButtons = document.querySelectorAll('.post-comment');
+      postButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+          const commentBox = button.closest('.comment-box');
+          const textarea = commentBox.querySelector('textarea');
+          const error = commentBox.querySelector('.comment-error');
+
+          if (textarea.value.trim() === '') {
+            error.style.display = 'block';
+          } else {
+            error.style.display = 'none';
+            const commentContent = textarea.value.trim();
+            const postId = button.closest('.post-card').querySelector('.post_id').value;
+
+            try {
+              const response = await fetch('/comment', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ post_id: postId, comment_content: commentContent })
+              });
+
+              const result = await response.json();
+
+              if (result.success) {
+                // Optionally, update the comment section dynamically
+                // For simplicity, reload the page to show the new comment
+                location.reload();
+              } else {
+                alert('Failed to post comment: ' + result.message);
+              }
+            } catch (error) {
+              console.error('Error posting comment:', error);
+              alert('An error occurred while posting the comment.');
+            }
+          }
+        });
+      });
+
+      // Save Post Functionality
+      const saveButtons = document.querySelectorAll('.save-button');
+      saveButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+          const postId = button.closest('.post-card').querySelector('.post_id').value;
+
+          try {
+            const response = await fetch('/savepost', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ post_id: postId })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              alert(result.message);
+            } else {
+              alert(result.message);
+            }
+          } catch (error) {
+            console.error('Error saving post:', error);
+            alert('An error occurred while saving the post.');
+          }
+        });
+      });
+    });
+  </script>
