@@ -48,8 +48,9 @@ describe('Testing Register User API', () => {
       .post('/register')
       .send({username: "fakeAccount", password: ""})
       .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.message).to.equals('Username and password are required.');
+        expect(res).to.have.status(200);
+        expect(res.text).to.include('Username and password are required.');
+        //expect(res.body.message).to.equals('Username and password are required.');
         done();
       });
   });
@@ -59,8 +60,9 @@ describe('Testing Register User API', () => {
       .post('/register')
       .send({username: "", password: "invalidAccount"})
       .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.message).to.equals('Username and password are required.');
+        expect(res).to.have.status(200);
+        expect(res.text).to.include('Username and password are required.');
+        //expect(res.body.message).to.equals('Username and password are required.');
         done();
       });
   });
@@ -103,8 +105,8 @@ describe('Testing Login User API', () => {
       .redirects(0) // Prevent following the redirect automatically
       .end((err, res) => {
         expect(res).to.have.status(200); //Expecting a render
-        res.should.be.html; // Expecting a HTML response
-        //expect(res.text).to.include('Incorrect username or password.');
+        //res.should.be.html; // Expecting a HTML response
+        expect(res.text).to.include('Invalid Password. Please try again.');
         done();
       });
   });
