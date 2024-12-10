@@ -1,0 +1,14 @@
+Meeting Log 2: 11/11/2024
+
+Both during and after meeting with our TA on Monday, we decided to assign the following overarching tasks:
+ - Andy:
+    - Update the navbar partial and its client-side CSS file
+ - Yusuf:
+    - Update the register page
+    - Create the home page
+ - Luke:
+    - Update the footer partial
+    - Update the post card partial and its client-side CSS file
+ - Rodolfo:
+    - Fix and complete the /register unit case and /login test cases
+    - Create the /createpost routes and update the createpost page

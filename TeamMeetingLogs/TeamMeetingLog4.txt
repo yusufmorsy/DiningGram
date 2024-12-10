@@ -1,0 +1,15 @@
+Meeting Log 2: 11/18/2024
+
+Both during and after our final meeting with our TA on Monday, we decided to assign the following responsibilities:
+ - Andy:
+    - Update the profile page and its respective GET routes
+    - Implement the API route that would enable users to edit their user profile
+ - Yusuf:
+    - Create the home page, which would display all posts in place of the posts partial, and its respective API routes that would enable this
+    - Implement the API routes that would enable users to save and comment on posts
+    - Update the home page and posts that would allow users to interact with the /savepost and /comment functionality and routes
+ - Luke:
+    - Create the profile page and set up relevant API routes
+ - Rodolfo:
+    - Implement client-side functionality to encode file uploads into base64 strings
+    - Update createpost page as needed to adjust for functionality

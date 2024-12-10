@@ -1,3 +1,62 @@
+Updated UAT Plan (the original plan will be kept below)
+ - Cause for update:
+    - Implemented Unit Cases for registration, login, create post, and profile editing features and original Feature 2 is now replaced by the functionality to save posts
+
+
+Feature 1: Users logging into their accounts
+
+To test this feature, we will consider the following test cases:
+ - Positive: Valid username and password, so the user successfully logged in
+ - Negative: Valid username, but invalid password, so the log in was unsuccessful
+
+For the user acceptance criteria, assuming the user made an account, all of the following fields must be submitted:
+ - Username
+ - Password
+
+In the positive case, we expect the user to be successfully redirected to the home page.
+In the negative case, since the password is invalid, we expect the application to re-render the login page, informing the user of the invalid password.
+
+
+
+Feature 2: Users can create posts
+
+To test this feature, we will consider the following two test cases:
+the post was successfully created and the post creation was not successful. 
+
+For the user acceptance criteria, all of the following fields must be submitted:
+- File upload
+- A biography/post content
+- Id of the dining hall they are referring to (dropdown will use id as value, but present corresponding name)
+- A rating
+
+Should they provide all the necessary information (positive test case), the post will be successfully created and then stored into the post table of the users_db database once submitted. This will be tested under the localhost environment. We expect the result to be a redirection to /home.
+
+Under the negative test case, we will consider that at least one of the fields is missing (i.e. dining hall id). Thus, we expect the post creation to fail and render the post creation page again.
+
+
+
+Feature 3:
+
+Feature 1: Users can edit their profiles
+
+To test this feature, we will consider the following test cases:
+ - Positive: User enters the appropriate information to update the profile with, so they will be redirected to their profile page with the new information
+ - Negative: User enters the appropriate information to update the profile with, but the user id is invalid (changing user id to a user that doesn't exist), which will cause a server error
+
+For the user acceptance criteria, assuming the user made an account and is logged in, all of the following fields must be submitted:
+ - User id (by system, rather than user)
+ - User's personal name (i.e. first and last name)
+ - A new bio
+ - File upload
+
+In the positive case, we expect the user to be successfully redirected to their profile page.
+In the negative case, since the password is invalid, we expect the application to send a status code of 500.
+
+
+
+
+Original UAT Plan:
+
 Feature 1: Users can create posts
 
 To test this feature, we will consider the following two test cases: the post was successfully created and the post creation was not successful. For the user acceptance criteria, all of the following fields must be submitted:
